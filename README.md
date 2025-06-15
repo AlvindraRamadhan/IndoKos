@@ -44,7 +44,9 @@ Membantu pengguna di seluruh Indonesia — khususnya mahasiswa dan perantau — 
 ## 📫 Kontak
 
 Untuk pertanyaan atau kerja sama, silakan hubungi:  
-📧 [2300016035@webmail.uad.ac.id]
+📧 [2300016035@webmail.uad.ac.id]dan
 📧 [2300016021@webmail.uad.ac.id]
+
+---
 
 Terima kasih telah mendukung IndoKos! 🇮🇩
