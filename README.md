@@ -1,43 +1,109 @@
-# 🏠 IndoKos
+# 🏠 IndoKos - Aplikasi Pencarian Kos
+
 
 **IndoKos** adalah aplikasi pencarian dan penyewaan kos terbaik di Indonesia. Dirancang khusus untuk memudahkan mahasiswa, pekerja, dan perantau dalam menemukan tempat tinggal yang nyaman, aman, dan sesuai dengan budget — semuanya bisa diakses langsung dari genggaman Anda.
 
 ---
 
-## ✨ Fitur Unggulan
+## ✨ Fitur Utama
 
-- 🔎 **Pencarian Cepat & Akurat**  
-  Temukan kos idaman Anda berdasarkan lokasi, harga, fasilitas, dan ulasan pengguna.
-
-- 📱 **Antarmuka Modern & User-Friendly**  
-  Tampilan bersih dan responsif yang memberikan pengalaman pengguna terbaik di Android dan iOS.
-
-- 🤖 **Fitur Pintar**  
-  Rekomendasi kos berdasarkan preferensi pengguna dan histori pencarian.
-
-- 🔒 **Aman & Terpercaya**  
-  Setiap kos yang ditampilkan telah melalui proses verifikasi untuk menjamin keamanan dan kenyamanan.
+### 🏠 Pencarian & Pemilihan Kos
+- Sistem pencarian dengan berbagai filter
+- Rekomendasi kos terbaik dan terbersih
+- Detail lengkap kos (fasilitas, peraturan, foto)
+- Sistem wishlist/favorit
 
 ---
 
-## ⚙️ Teknologi
-
-Aplikasi ini dibangun menggunakan:
-
-- [Flutter](https://flutter.dev/) – Framework UI open-source dari Google
-- Dukungan penuh untuk **Android** dan **iOS**
+### 💳 Manajemen Pembayaran
+- Konfirmasi pemesanan kos
+- Pilihan metode pembayaran
+- Detail pembayaran lengkap
+- Riwayat transaksi
 
 ---
 
-## 🚀 Tujuan
+### 👤 Manajemen Akun
+- Profil pengguna
+- Ubah data pribadi
+- Ganti password
+- Riwayat pemesanan
 
-Membantu pengguna di seluruh Indonesia — khususnya mahasiswa dan perantau — untuk menemukan hunian yang ideal secara cepat dan efisien tanpa harus repot survei langsung.
+---
+
+## 📱 Teknologi
+
+- **Framework**: Flutter 3.32.4
+- **Bahasa**: Dart 3.8.1
+- **Paket Utama**:
+  - `cached_network_image: ^3.3.0`
+  - `carousel_slider: ^4.2.1`
+  - `flutter_rating_bar: ^4.0.1`
+
+---
+
+## 🖼️ Screenshot Aplikasi
+
+
+
+---
+
+## 🛠️ Instalasi
+
+1. Clone repository:
+```bash
+git clone https://github.com/AlvindraRamadhan/IndoKos.git
+cd IndoKos
+```
+2. Install dependencies:
+``` bash
+flutter pub get 
+```
+3. Jalankan Aplikasi:
+```bash
+flutter run
+```
+---
+
+🗂️ Struktur Project
+lib/
+├── main.dart
+├── models/
+│   ├── kos_model.dart
+│   ├── booking_model.dart
+│   └── user_model.dart
+├── screens/
+│   ├── dashboard_screen.dart
+│   ├── search_kos_screen.dart
+│   ├── kos_detail_screen.dart
+│   └── [lainnya...]
+├── widgets/
+│   ├── kos_card.dart
+│   ├── recommendation_card.dart
+│   └── [lainnya...]
+└── utils/
+    ├── constants.dart
+    └── mock_data.dart
+
+---
+
+🤝 Kontribusi
+1. Fork project
+
+2. Buat branch fitur (git checkout -b fitur/namafitur)
+
+3. Commit perubahan (git commit -m 'Tambahkan fitur')
+
+3. Push ke branch (git push origin fitur/namafitur)
+
+4. Buat Pull Request
 
 ---
 
 ## 📌 Status
 
 🚧 Proyek dalam tahap pengembangan aktif.
+
 
 ---
 
