@@ -67,24 +67,24 @@ flutter run
 
 🗂️ Struktur Project
 lib/
-├── main.dart
-├── models/
-│   ├── kos_model.dart
-│   ├── booking_model.dart
-│   └── user_model.dart
-├── screens/
-│   ├── dashboard_screen.dart
-│   ├── search_kos_screen.dart
-│   ├── kos_detail_screen.dart
-│   └── [lainnya...]
-├── widgets/
-│   ├── kos_card.dart
-│   ├── recommendation_card.dart
-│   └── [lainnya...]
-└── utils/
-    ├── constants.dart
-    └── mock_data.dart
-
+|—— main.dart
+|—— features/
+|   |—— home/
+|   |   |—— screens/
+|   |   |—— widgets/
+|   |—— search/
+|   |   |—— screens/
+|   |   |—— widgets/
+|—— core/
+|   |—— models/
+|   |   |—— kos/
+|   |   |—— booking/
+|   |—— utils/
+|   |   |—— constants.dart
+|   |   |—— mock_data.dart
+|—— shared/
+    |—— widgets/
+    |—— themes/
 ---
 
 🤝 Kontribusi
