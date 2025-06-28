@@ -65,13 +65,29 @@ flutter run
 ```
 ---
 
-🗂️ Struktur Project
+## 🗂️ Struktur Project
+
+```bash
 lib/
-models/
-screens/
-utils/
-widget/
-main.dart
+├── main.dart
+├── models/
+│   ├── kos_model.dart
+│   ├── booking_model.dart
+│   └── user_model.dart
+├── screens/
+│   ├── dashboard_screen.dart
+│   ├── search_kos_screen.dart
+│   ├── kos_detail_screen.dart
+│   └── [lainnya...]
+├── widgets/
+│   ├── kos_card.dart
+│   ├── recommendation_card.dart
+│   └── [lainnya...]
+└── utils/
+    ├── constants.dart
+    └── mock_data.dart
+
+```
 
 ---
 
