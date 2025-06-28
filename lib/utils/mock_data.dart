@@ -29,6 +29,7 @@ final mockKosList = [
     description: 'Kost ekonomis dengan lokasi strategis dekat kampus.',
     images: [
       'https://images.unsplash.com/photo-1554469384-e58fac16e23a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+      'https://images.pexels.com/photos/439227/pexels-photo-439227.jpeg?auto=compress&cs=tinysrgb&w=500',
     ],
     type: 'bulanan',
   ),
@@ -42,8 +43,9 @@ final mockKosList = [
     facilities: ['KM Dalam', 'AC', 'Parkir', 'Dapur'],
     description: 'Kost dengan suasana asri dan lingkungan yang tenang.',
     images: [
-      'https://images.unsplash.com/photo-1484154218962-a197022b5858?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+      'https://images.pexels.com/photos/1571468/pexels-photo-1571468.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // Living room
+      'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // Bedroom
+      'https://images.pexels.com/photos/271816/pexels-photo-271816.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', // Kitchen area
     ],
     type: 'tahunan',
   ),
@@ -58,6 +60,7 @@ final mockKosList = [
     description: 'Kost eksklusif untuk putra dengan fasilitas premium.',
     images: [
       'https://images.unsplash.com/photo-1493809842364-78817add7ffb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+      'https://images.pexels.com/photos/271624/pexels-photo-271624.jpeg?auto=compress&cs=tinysrgb&w=500',
     ],
     type: 'tahunan',
   ),
@@ -72,7 +75,7 @@ final mockKosList = [
     description: 'Kost modern dengan desain minimalis dan nyaman.',
     images: [
       'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-      'https://images.unsplash.com/photo-1523357580085-5fef0a4fda6e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+      //'https://images.unsplash.com/photo-1523357580085-5fef0a4fda6e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
     ],
     type: 'bulanan',
   ),
@@ -87,6 +90,7 @@ final mockKosList = [
     description: 'Kost khusus wanita dengan keamanan 24 jam.',
     images: [
       'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+      'https://images.pexels.com/photos/279719/pexels-photo-279719.jpeg?auto=compress&cs=tinysrgb&w=500',
     ],
     type: 'bulanan',
   ),
@@ -101,6 +105,52 @@ final mockKosList = [
     description: 'Kost dengan suasana homey dan pelayanan ramah.',
     images: [
       'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+      'https://images.pexels.com/photos/1643383/pexels-photo-1643383.jpeg?auto=compress&cs=tinysrgb&w=500',
+    ],
+    type: 'bulanan',
+  ),
+  Kos(
+    id: '8',
+    name: 'Kost Harmoni',
+    location: 'Kemuning, Palembang',
+    price: 750000,
+    rating: 4.0,
+    reviewers: 80,
+    facilities: ['KM Dalam', 'Kipas Angin', 'Parkir', 'Dapur Bersama'],
+    description: 'Kost dengan lokasi strategis dekat pusat perbelanjaan.',
+    images: [
+      'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+      'https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg?auto=compress&cs=tinysrgb&w=500',
+    ],
+    type: 'bulanan',
+  ),
+  Kos(
+    id: '9',
+    name: 'Kost Pelangi',
+    location: 'Sekip, Palembang',
+    price: 850000,
+    rating: 4.3,
+    reviewers: 65,
+    facilities: ['KM Dalam', 'AC', 'Parkir', 'Ruang Tamu'],
+    description: 'Kost dengan desain warna-warni yang ceria dan nyaman.',
+    images: [
+      'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+      'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=500',
+    ],
+    type: 'tahunan',
+  ),
+  Kos(
+    id: '10',
+    name: 'Kost Sejahtera',
+    location: 'Kertapati, Palembang',
+    price: 600000,
+    rating: 3.9,
+    reviewers: 45,
+    facilities: ['KM Luar', 'Kipas Angin', 'Parkir'],
+    description: 'Kost ekonomis dengan lingkungan yang asri dan bersih.',
+    images: [
+      'https://images.unsplash.com/photo-1524758631624-e2822e304c36?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+      'https://images.pexels.com/photos/271643/pexels-photo-271643.jpeg?auto=compress&cs=tinysrgb&w=500',
     ],
     type: 'bulanan',
   ),
