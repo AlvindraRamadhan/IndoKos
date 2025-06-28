@@ -67,24 +67,12 @@ flutter run
 
 🗂️ Struktur Project
 lib/
-|—— main.dart
-|—— features/
-|   |—— home/
-|   |   |—— screens/
-|   |   |—— widgets/
-|   |—— search/
-|   |   |—— screens/
-|   |   |—— widgets/
-|—— core/
-|   |—— models/
-|   |   |—— kos/
-|   |   |—— booking/
-|   |—— utils/
-|   |   |—— constants.dart
-|   |   |—— mock_data.dart
-|—— shared/
-    |—— widgets/
-    |—— themes/
+models/
+screens/
+utils/
+widget/
+main.dart
+
 ---
 
 🤝 Kontribusi
