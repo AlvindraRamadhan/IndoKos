@@ -56,7 +56,7 @@ Dengan antarmuka yang user-friendly dan sistem yang aman, IndoKos menjadi solusi
 ---
 
 ## 🖼️ Screenshot Aplikasi
-
+![Beranda](image.png)
 
 
 ---
