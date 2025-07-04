@@ -38,12 +38,12 @@ Dengan antarmuka yang user-friendly dan sistem yang aman, IndoKos menjadi solusi
 
 ## 📱 Framework dan Teknologi
 
-- **Frontend**
+1. Frontend
 - Flutter (Dart)
 - Provider (State Management)
 - Go Router (Navigation)
-- **Backend**
-- **Library Pendukung**
+2. Backend
+3. Library Pendukung
 - Cached Network Image
 - Image Picker
 - URL Launcher
