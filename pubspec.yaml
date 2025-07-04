@@ -1,24 +1,37 @@
 name: indokos
-description: Aplikasi pencarian kos-kosan di Indonesia
-
+description: A new Flutter project.
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ">=3.2.3 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+
+  # Core
+  provider: ^6.1.1
+  go_router: ^13.2.0
+  shared_preferences: ^2.2.2
+  intl: ^0.19.0
+
+  # UI & Widgets
+  cached_network_image: ^3.3.1
+  flutter_svg: ^2.0.9
+  card_swiper: ^3.0.1
+  google_fonts: ^6.1.0
+
+  # Utilities
+  image_picker: ^1.0.7
+  url_launcher: ^6.2.5
+
   cupertino_icons: ^1.0.2
-  intl: ^0.18.1
-  carousel_slider: ^4.2.1
-  flutter_rating_bar: ^4.0.1
-  cached_network_image: ^3.3.0 # Untuk caching gambar dari internet
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
 
 flutter:
   uses-material-design: true
