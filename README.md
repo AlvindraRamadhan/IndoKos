@@ -43,7 +43,9 @@ Dengan antarmuka yang user-friendly dan sistem yang aman, IndoKos menjadi solusi
 - Provider (State Management)
 - Go Router (Navigation)
 2. Backend
-
+- 
+- 
+- 
 3. Library Pendukung
 - Cached Network Image
 - Image Picker
