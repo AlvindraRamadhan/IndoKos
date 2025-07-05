@@ -27,12 +27,12 @@ class MobileBottomNav extends StatelessWidget {
         color: Theme.of(context).colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color:  Colors.black.withAlpha(13),
+            color: Colors.black.withAlpha(13),
             blurRadius: 10,
           )
         ],
-        border: Border(
-            top: BorderSide(color: Colors.grey.withAlpha(51), width: 1)),
+        border:
+            Border(top: BorderSide(color: Colors.grey.withAlpha(51), width: 1)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -66,7 +66,8 @@ class MobileBottomNav extends StatelessWidget {
                           isSelected ? AppTheme.primaryColor : Colors.grey[500],
                       size: 26,
                     ),
-                  const SizedBox(height: 4),
+                  // FIX: Reduced spacing to prevent tiny pixel overflow
+                  const SizedBox(height: 3),
                   Text(
                     item['label'] as String,
                     style: TextStyle(

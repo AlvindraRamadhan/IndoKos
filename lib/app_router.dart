@@ -7,6 +7,7 @@ import 'register_screen.dart';
 import 'main_layout.dart';
 import 'mobile_home_screen.dart';
 import 'chat_list_screen.dart';
+import 'chat_detail_screen.dart';
 import 'booking_history_screen.dart';
 import 'profile_screen.dart';
 import 'search_screen.dart';
@@ -18,6 +19,9 @@ import 'submit_kos_screen.dart';
 import 'wishlist_screen.dart';
 import 'about_us_screen.dart';
 import 'settings_screen.dart';
+import 'edit_profile_screen.dart';
+import 'change_password_screen.dart';
+import 'models.dart';
 
 class AppRouter {
   final AuthProvider authProvider;
@@ -26,6 +30,7 @@ class AppRouter {
   late final GoRouter router = GoRouter(
     refreshListenable: authProvider,
     initialLocation: '/',
+    debugLogDiagnostics: true, // Aktifkan untuk melihat log navigasi
     routes: <RouteBase>[
       ShellRoute(
         builder: (context, state, child) {
@@ -57,6 +62,13 @@ class AppRouter {
             KosDetailScreen(kosId: state.pathParameters['id']!),
       ),
       GoRoute(
+        path: '/chat/:id',
+        builder: (context, state) {
+          final chatRoom = state.extra as ChatRoom;
+          return ChatDetailScreen(chatRoom: chatRoom);
+        },
+      ),
+      GoRoute(
         path: '/booking/:id',
         builder: (context, state) =>
             BookingScreen(kosId: state.pathParameters['id']!),
@@ -86,15 +98,34 @@ class AppRouter {
       GoRoute(
           path: '/settings',
           builder: (context, state) => const SettingsScreen()),
+      GoRoute(
+          path: '/edit-profile',
+          builder: (context, state) => const EditProfileScreen()),
+      GoRoute(
+          path: '/change-password',
+          builder: (context, state) => const ChangePasswordScreen()),
     ],
+    // FIX: Logika redirect disederhanakan agar lebih kuat dan konsisten
     redirect: (context, state) {
-      final bool loggedIn = authProvider.user != null;
-      final bool isAuthRoute = state.matchedLocation == '/login' ||
-          state.matchedLocation == '/register';
+      final loggedIn = authProvider.user != null;
+      final location = state.matchedLocation;
 
-      if (!loggedIn && !isAuthRoute) return '/login';
-      if (loggedIn && isAuthRoute) return '/';
+      // Cek apakah pengguna sedang berada di halaman login atau register
+      final onAuthRoute = location == '/login' || location == '/register';
 
+      // ATURAN 1: Jika pengguna BELUM login dan TIDAK sedang di halaman auth,
+      // paksa arahkan ke halaman login. Ini melindungi semua halaman lain.
+      if (!loggedIn && !onAuthRoute) {
+        return '/login';
+      }
+
+      // ATURAN 2: Jika pengguna SUDAH login dan mencoba mengakses halaman auth,
+      // arahkan ke beranda agar tidak melihat halaman login/register lagi.
+      if (loggedIn && onAuthRoute) {
+        return '/';
+      }
+
+      // Jika tidak ada kondisi di atas yang terpenuhi, jangan lakukan redirect.
       return null;
     },
   );

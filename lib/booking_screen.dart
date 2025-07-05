@@ -22,11 +22,10 @@ class _BookingScreenState extends State<BookingScreen> {
   final int _adminFee = 50000;
 
   void _next() {
-    bool isStepValid = false;
+    bool isStepValid = true;
     if (_currentStep == 0) {
-      isStepValid =
-          _bookingData.checkInDate.isNotEmpty && _bookingData.duration > 0;
-      if (!isStepValid) {
+      if (_bookingData.checkInDate.isEmpty || _bookingData.duration <= 0) {
+        isStepValid = false;
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text('Pilih tanggal dan durasi terlebih dahulu.'),
             backgroundColor: Colors.red));
@@ -36,8 +35,6 @@ class _BookingScreenState extends State<BookingScreen> {
       if (isStepValid) {
         _formKey.currentState!.save();
       }
-    } else {
-      isStepValid = true;
     }
 
     if (isStepValid) {
@@ -53,6 +50,8 @@ class _BookingScreenState extends State<BookingScreen> {
     }
   }
 
+  // FIX: This logic correctly goes back one step, or exits the booking screen
+  // to the previous page (Kos Detail) if on the first step.
   void _back() {
     if (_currentStep > 0) {
       setState(() => _currentStep--);
@@ -68,7 +67,6 @@ class _BookingScreenState extends State<BookingScreen> {
       _buildStep2(),
       _buildStep3(),
     ];
-
     return Scaffold(
       appBar: AppBar(
         leading:
@@ -104,9 +102,11 @@ class _BookingScreenState extends State<BookingScreen> {
                       Container(
                         height: 4,
                         margin: const EdgeInsets.symmetric(horizontal: 4),
-                        color: _currentStep >= index
-                            ? AppTheme.primaryColor
-                            : Colors.grey.shade300,
+                        decoration: BoxDecoration(
+                            color: _currentStep >= index
+                                ? AppTheme.primaryColor
+                                : Colors.grey.shade300,
+                            borderRadius: BorderRadius.circular(2)),
                       ),
                     ],
                   ),
@@ -118,7 +118,8 @@ class _BookingScreenState extends State<BookingScreen> {
         ],
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.fromLTRB(
+            16, 16, 16, 16 + MediaQuery.of(context).padding.bottom),
         child: ElevatedButton(
           onPressed: _next,
           child: Text(_currentStep == 2 ? 'Lanjut ke Pembayaran' : 'Lanjutkan'),
@@ -127,6 +128,7 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
+  // ... rest of the file is unchanged ...
   Widget _buildStep1() {
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -154,8 +156,7 @@ class _BookingScreenState extends State<BookingScreen> {
                   return Theme(
                     data: Theme.of(context).copyWith(
                       colorScheme: const ColorScheme.light(
-                        primary: AppTheme.primaryColor,
-                      ),
+                          primary: AppTheme.primaryColor),
                     ),
                     child: child!,
                   );
@@ -294,7 +295,6 @@ class _BookingScreenState extends State<BookingScreen> {
 
   Widget _buildPriceSummary() {
     return Card(
-      // **FIX 1:** Mengganti withOpacity(0.05) dengan withAlpha(13)
       color: AppTheme.primaryColor.withAlpha(13),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -322,13 +322,15 @@ class _BookingScreenState extends State<BookingScreen> {
           Text(label,
               style: TextStyle(
                   fontWeight: isBold ? FontWeight.bold : FontWeight.normal)),
-          Text(value,
-              style: TextStyle(
-                fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-                color: isBold
-                    ? AppTheme.primaryColor
-                    : Theme.of(context).textTheme.bodyLarge?.color,
-              )),
+          Text(
+            value,
+            style: TextStyle(
+              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+              color: isBold
+                  ? AppTheme.primaryColor
+                  : Theme.of(context).textTheme.bodyLarge?.color,
+            ),
+          ),
         ],
       ),
     );

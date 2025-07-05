@@ -15,65 +15,72 @@ class KosDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => KosProvider(),
-      child: Consumer<KosProvider>(
-        builder: (context, provider, child) {
-          final kos = provider.findById(kosId);
-          // Mock owner data
-          final owner = {'phone': '+6281234567890'};
+    final provider = Provider.of<KosProvider>(context);
+    final kos = provider.findById(kosId);
+    final owner = {'phone': '+6281234567890'};
 
-          return Scaffold(
-            body: CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  expandedHeight: 250.0,
-                  pinned: true,
-                  floating: true,
-                  stretch: true,
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: _buildImageGallery(kos),
-                  ),
-                  actions: [
-                    IconButton(
-                      icon: Icon(
-                          kos.isWishlisted
-                              ? Icons.favorite_rounded
-                              : Icons.favorite_border_rounded,
-                          color: Colors.white),
-                      onPressed: () => provider.toggleWishlist(kos.id),
-                    ),
-                    IconButton(
-                      icon:
-                          const Icon(Icons.share_rounded, color: Colors.white),
-                      onPressed: () {/* Share logic */},
-                    ),
-                  ],
-                ),
-                SliverList(
-                  delegate: SliverChildListDelegate([
-                    _buildBasicInfo(context, kos),
-                    _buildSection(
-                      "Deskripsi",
-                      Text(
-                        "Kos nyaman dan strategis di pusat kota Jakarta. Dilengkapi dengan fasilitas lengkap dan keamanan 24 jam. Cocok untuk mahasiswa dan pekerja muda.",
-                        style: TextStyle(color: Colors.grey[700], height: 1.5),
-                      ),
-                    ),
-                    _buildFacilities(kos.facilities),
-                    const SizedBox(height: 100), // Spacer for bottom bar
-                  ]),
-                ),
-              ],
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 250.0,
+            pinned: true,
+            floating: false,
+            stretch: true,
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IconButton(
+                // FIX: Back button now navigates to the Home Screen ('/')
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => context.go('/'),
+                style: IconButton.styleFrom(
+                    backgroundColor: Colors.black.withAlpha(102)),
+              ),
             ),
-            bottomNavigationBar:
-                _buildBottomBar(context, kosId, owner['phone']!),
-          );
-        },
+            flexibleSpace: FlexibleSpaceBar(
+              background: _buildImageGallery(kos),
+              stretchModes: const [StretchMode.zoomBackground],
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(
+                    kos.isWishlisted
+                        ? Icons.favorite_rounded
+                        : Icons.favorite_border_rounded,
+                    color: kos.isWishlisted ? Colors.red : Colors.white),
+                onPressed: () => provider.toggleWishlist(kos.id),
+                style: IconButton.styleFrom(
+                    backgroundColor: Colors.black.withAlpha(102)),
+              ),
+              IconButton(
+                icon: const Icon(Icons.share_rounded, color: Colors.white),
+                onPressed: () {/* Share logic */},
+                style: IconButton.styleFrom(
+                    backgroundColor: Colors.black.withAlpha(102)),
+              ),
+              const SizedBox(width: 8),
+            ],
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              _buildBasicInfo(context, kos),
+              _buildSection(
+                "Deskripsi",
+                Text(
+                  "Kos nyaman dan strategis di pusat kota. Dilengkapi dengan fasilitas lengkap dan keamanan 24 jam. Cocok untuk mahasiswa dan pekerja muda.",
+                  style: TextStyle(color: Colors.grey[700], height: 1.5),
+                ),
+              ),
+              _buildFacilities(kos.facilities),
+            ]),
+          ),
+        ],
       ),
+      bottomNavigationBar: _buildBottomBar(context, kosId, owner['phone']!),
     );
   }
 
+  // ... rest of the file is unchanged
   Widget _buildImageGallery(KosData kos) {
     return Stack(
       fit: StackFit.expand,
@@ -87,10 +94,7 @@ class KosDetailScreen extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                Colors.black.withAlpha(102),
-                Colors.transparent
-              ], // Diperbaiki
+              colors: [Colors.black.withAlpha(128), Colors.transparent],
               begin: Alignment.topCenter,
               end: Alignment.center,
             ),
@@ -102,7 +106,7 @@ class KosDetailScreen extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.black.withAlpha(128), // Diperbaiki
+              color: Colors.black.withAlpha(128),
               borderRadius: BorderRadius.circular(20),
             ),
             child: const Text("1 / 4", style: TextStyle(color: Colors.white)),
@@ -128,7 +132,7 @@ class KosDetailScreen extends StatelessWidget {
                         fontSize: 22, fontWeight: FontWeight.bold)),
               ),
               Text(
-                formatCurrency(kos.price), // 'const' dihapus dari sini
+                formatCurrency(kos.price),
                 style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -214,8 +218,7 @@ class KosDetailScreen extends StatelessWidget {
         children: facilities
             .map((f) => Chip(
                   label: Text(f),
-                  backgroundColor:
-                      AppTheme.primaryColor.withAlpha(26), // Diperbaiki
+                  backgroundColor: AppTheme.primaryColor.withAlpha(26),
                   labelStyle: const TextStyle(color: AppTheme.primaryColor),
                   side: BorderSide.none,
                 ))
@@ -236,7 +239,7 @@ class KosDetailScreen extends StatelessWidget {
               color: Colors.black.withAlpha(13),
               blurRadius: 10,
               offset: const Offset(0, -5))
-        ], // Diperbaiki
+        ],
       ),
       child: Row(
         children: [

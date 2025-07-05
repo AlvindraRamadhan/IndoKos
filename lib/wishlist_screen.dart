@@ -9,49 +9,54 @@ class WishlistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => KosProvider(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Wishlist'),
+    return Scaffold(
+      appBar: AppBar(
+        // FIX: Added a leading back button
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.pop(),
         ),
-        body: Consumer<KosProvider>(
-          builder: (context, provider, child) {
-            final wishlistedItems = provider.wishlistedKos;
-            if (wishlistedItems.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.favorite_border,
-                        size: 80, color: Colors.grey[300]),
-                    const SizedBox(height: 16),
-                    const Text("Wishlist Anda Kosong",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 4),
-                    Text("Mulai tambahkan kos favorit Anda!",
-                        style: TextStyle(color: Colors.grey[600])),
-                  ],
-                ),
-              );
-            }
-
-            return ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: wishlistedItems.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 16),
-              itemBuilder: (context, index) {
-                final kos = wishlistedItems[index];
-                return KosCardMobile(
-                  kos: kos,
-                  onTap: () => context.go('/kos/${kos.id}'),
-                  onWishlist: () => provider.toggleWishlist(kos.id),
-                );
-              },
+        title: const Text('Wishlist'),
+      ),
+      body: Consumer<KosProvider>(
+        builder: (context, provider, child) {
+          final wishlistedItems = provider.wishlistedKos;
+          if (wishlistedItems.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.favorite_border,
+                      size: 80, color: Colors.grey[300]),
+                  const SizedBox(height: 16),
+                  const Text(
+                    "Wishlist Anda Kosong",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "Mulai tambahkan kos favorit Anda!",
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                ],
+              ),
             );
-          },
-        ),
+          }
+
+          return ListView.separated(
+            padding: const EdgeInsets.all(16),
+            itemCount: wishlistedItems.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 16),
+            itemBuilder: (context, index) {
+              final kos = wishlistedItems[index];
+              return KosCardMobile(
+                kos: kos,
+                onTap: () => context.go('/kos/${kos.id}'),
+                onWishlist: () => provider.toggleWishlist(kos.id),
+              );
+            },
+          );
+        },
       ),
     );
   }

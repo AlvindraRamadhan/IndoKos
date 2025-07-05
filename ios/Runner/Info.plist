@@ -24,12 +24,6 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<!-- Tambahkan ini untuk izin akses internet -->
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -51,5 +45,13 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Aplikasi ini memerlukan akses ke galeri untuk mengunggah foto kos.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Aplikasi ini memerlukan akses ke kamera untuk mengambil foto kos.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Aplikasi ini memerlukan akses ke mikrofon untuk merekam video.</string>
+
 </dict>
 </plist>

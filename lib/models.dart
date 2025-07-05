@@ -159,13 +159,16 @@ class KosSubmission {
     this.type = 'putra',
     this.price = '',
     this.description = '',
-    this.facilities = const [],
-    this.rules = const [],
-    this.images = const [],
+    List<String>? facilities,
+    List<String>? rules,
+    List<File>? images,
     this.contactName = '',
     this.contactPhone = '',
     this.contactEmail = '',
-  });
+    // FIX: Removed unnecessary 'this.' qualifier
+  })  : facilities = facilities ?? [],
+        rules = rules ?? [],
+        images = images ?? [];
 }
 
 class BookingData {

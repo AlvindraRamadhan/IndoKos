@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
+import 'package:go_router/go_router.dart';
 import 'app_theme.dart';
 import 'models.dart';
 
@@ -9,21 +10,21 @@ class PromoCarousel extends StatelessWidget {
 
   final List<PromoItem> _promoData = [
     PromoItem(
-      id: '1',
+      id: '4', // Corresponds to Kos Dahlia Syariah
       title: 'Promo Kos Putri',
       subtitle: 'Khusus kos putri dengan fasilitas lengkap',
       image:
           'https://images.pexels.com/photos/1571468/pexels-photo-1571468.jpeg?auto=compress&cs=tinysrgb&w=800',
     ),
     PromoItem(
-      id: '2',
+      id: '1', // Corresponds to Kos Melati
       title: 'Weekend Special',
       subtitle: 'Booking weekend dapat cashback 100K',
       image:
           'https://images.pexels.com/photos/1571470/pexels-photo-1571470.jpeg?auto=compress&cs=tinysrgb&w=800',
     ),
     PromoItem(
-      id: '3',
+      id: '3', // Corresponds to Kos Anggrek Premium
       title: 'Flash Sale Kos Premium',
       subtitle: 'Diskon hingga 30% untuk kos di pusat kota',
       image:
@@ -75,28 +76,36 @@ class PromoCarousel extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(promo.title,
-                          style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              shadows: [
-                                Shadow(blurRadius: 5, color: Colors.black54)
-                              ])),
+                      Text(
+                        promo.title,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(blurRadius: 5, color: Colors.black54)
+                          ],
+                        ),
+                      ),
                       const SizedBox(height: 4),
-                      Text(promo.subtitle,
-                          style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.white70,
-                              shadows: [
-                                Shadow(blurRadius: 5, color: Colors.black54)
-                              ])),
+                      Text(
+                        promo.subtitle,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.white70,
+                          shadows: [
+                            Shadow(blurRadius: 5, color: Colors.black54)
+                          ],
+                        ),
+                      ),
                       const SizedBox(height: 12),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () =>
+                            context.go('/kos/${promo.id}'), // Navigate on press
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: AppTheme.primaryColor),
+                          backgroundColor: Colors.white,
+                          foregroundColor: AppTheme.primaryColor,
+                        ),
                         child: const Text("Lihat Promo"),
                       )
                     ],

@@ -4,6 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import 'auth_provider.dart';
 import 'theme_provider.dart';
+import 'kos_provider.dart'; 
 import 'app_theme.dart';
 import 'app_router.dart';
 import 'loading_screen.dart';
@@ -24,6 +25,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(
+            create: (_) => KosProvider()), // Add KosProvider here
       ],
       child: const AppContent(),
     );
@@ -47,7 +50,9 @@ class _AppContentState extends State<AppContent> {
   }
 
   Future<void> _initializeApp() async {
+    // No need to load user here if it's handled in the router/redirect
     await Provider.of<AuthProvider>(context, listen: false).loadUser();
+    // Simulate loading time
     await Future.delayed(const Duration(milliseconds: 2500));
     if (mounted) {
       setState(() {
@@ -61,8 +66,7 @@ class _AppContentState extends State<AppContent> {
     if (_isInitializing) {
       return const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home:
-            LoadingScreen(), 
+        home: LoadingScreen(),
       );
     }
 

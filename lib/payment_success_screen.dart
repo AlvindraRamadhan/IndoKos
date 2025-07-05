@@ -1,19 +1,146 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:open_file_plus/open_file_plus.dart';
+import 'dart:io';
 
 import 'models.dart';
 import 'utils.dart';
 import 'app_theme.dart';
 
-class PaymentSuccessScreen extends StatelessWidget {
+class PaymentSuccessScreen extends StatefulWidget {
   final Map<String, dynamic> paymentDetails;
   const PaymentSuccessScreen({super.key, required this.paymentDetails});
+
+  @override
+  State<PaymentSuccessScreen> createState() => _PaymentSuccessScreenState();
+}
+
+class _PaymentSuccessScreenState extends State<PaymentSuccessScreen> {
+  // FIX: Implemented PDF generation and download functionality
+  Future<void> _downloadReceipt() async {
+    final BookingData? bookingData = widget.paymentDetails['bookingData'];
+    final Map<String, dynamic>? paymentMethod =
+        widget.paymentDetails['paymentMethod'];
+    final int? totalAmount = widget.paymentDetails['totalPrice'];
+    final String bookingId =
+        "IK${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}";
+
+    if (bookingData == null || paymentMethod == null || totalAmount == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Data tidak valid untuk membuat struk.')));
+      return;
+    }
+
+    final pdf = pw.Document();
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context pdfContext) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Header(
+                level: 0,
+                child: pw.Text('Struk Pembayaran IndoKos',
+                    style: pw.TextStyle(
+                        fontWeight: pw.FontWeight.bold, fontSize: 24)),
+              ),
+              pw.Divider(),
+              pw.SizedBox(height: 20),
+              pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text('ID Pemesanan:'),
+                    pw.Text(bookingId,
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                  ]),
+              pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text('Tanggal Transaksi:'),
+                    pw.Text(DateFormat('d MMMM yyyy, HH:mm', 'id_ID')
+                        .format(DateTime.now())),
+                  ]),
+              pw.SizedBox(height: 20),
+              pw.Divider(),
+              pw.SizedBox(height: 10),
+              pw.Text('Detail Pemesanan:',
+                  style: pw.TextStyle(
+                      fontWeight: pw.FontWeight.bold, fontSize: 16)),
+              pw.SizedBox(height: 8),
+              pw.Text(
+                  'Nama Kos: Kos Melati Residence'), // Note: This is static data
+              pw.Text('Nama Penyewa: ${bookingData.fullName}'),
+              pw.Text(
+                  'Check-in: ${DateFormat('d MMMM yyyy', 'id_ID').format(DateTime.parse(bookingData.checkInDate))}'),
+              pw.Text('Durasi: ${bookingData.duration} bulan'),
+              pw.SizedBox(height: 20),
+              pw.Divider(),
+              pw.SizedBox(height: 10),
+              pw.Text('Detail Pembayaran:',
+                  style: pw.TextStyle(
+                      fontWeight: pw.FontWeight.bold, fontSize: 16)),
+              pw.SizedBox(height: 8),
+              pw.Text('Metode Pembayaran: ${paymentMethod['name']}'),
+              pw.SizedBox(height: 20),
+              pw.Container(
+                  padding: const pw.EdgeInsets.all(12),
+                  decoration: pw.BoxDecoration(
+                      border: pw.Border.all(color: PdfColors.grey),
+                      borderRadius: pw.BorderRadius.circular(5)),
+                  child: pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                      children: [
+                        pw.Text('TOTAL PEMBAYARAN',
+                            style: pw.TextStyle(
+                                fontWeight: pw.FontWeight.bold, fontSize: 14)),
+                        pw.Text(formatCurrency(totalAmount),
+                            style: pw.TextStyle(
+                                fontWeight: pw.FontWeight.bold,
+                                fontSize: 18,
+                                color: PdfColors.green)),
+                      ])),
+              pw.SizedBox(height: 40),
+              pw.Center(
+                  child: pw.Text(
+                      '--- Terima Kasih Telah Menggunakan IndoKos ---',
+                      style: const pw.TextStyle(color: PdfColors.grey))),
+            ],
+          );
+        },
+      ),
+    );
+
+    try {
+      final output = await getApplicationDocumentsDirectory();
+      final file = File("${output.path}/struk_indokos_$bookingId.pdf");
+      await file.writeAsBytes(await pdf.save());
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Struk disimpan di folder Dokumen.')));
+
+      // Open the file
+      await OpenFile.open(file.path);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Gagal menyimpan struk: $e')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final BookingData? bookingData = paymentDetails['bookingData'];
-    final Map<String, dynamic>? paymentMethod = paymentDetails['paymentMethod'];
-    final int? totalAmount = paymentDetails['totalPrice'];
+    final BookingData? bookingData = widget.paymentDetails['bookingData'];
+    final Map<String, dynamic>? paymentMethod =
+        widget.paymentDetails['paymentMethod'];
+    final int? totalAmount = widget.paymentDetails['totalPrice'];
     final String bookingId =
         "IK${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}";
     if (bookingData == null || paymentMethod == null || totalAmount == null) {
@@ -30,8 +157,7 @@ class PaymentSuccessScreen extends StatelessWidget {
           _buildSuccessHeader(bookingId),
           const SizedBox(height: 24),
           _buildDetailCard("Detail Kos", [
-            _buildDetailRow("Nama Kos",
-                "Kos Melati Residence"), // Static based on mock data
+            _buildDetailRow("Nama Kos", "Kos Melati Residence"),
             _buildDetailRow(
                 "Check-in",
                 DateFormat.yMMMMd('id_ID')
@@ -89,7 +215,7 @@ class PaymentSuccessScreen extends StatelessWidget {
                     child: OutlinedButton.icon(
                         icon: const Icon(Icons.download_outlined),
                         label: const Text("Download"),
-                        onPressed: () {})),
+                        onPressed: _downloadReceipt)),
                 const SizedBox(width: 16),
                 Expanded(
                     child: OutlinedButton.icon(

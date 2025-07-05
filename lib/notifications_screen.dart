@@ -6,13 +6,13 @@ import 'app_theme.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen({super.key});
+
   @override
   State<NotificationsScreen> createState() => _NotificationsScreenState();
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
   String _selectedFilter = 'semua';
-
   final List<NotificationItem> _mockNotifications = [
     NotificationItem(
       id: '1',
@@ -64,7 +64,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     ),
   ];
 
-  // Metode ini sekarang akan digunakan
   IconData _getIcon(String type) {
     switch (type) {
       case 'payment':
@@ -82,7 +81,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     }
   }
 
-  // Metode ini sekarang akan digunakan
   Color _getIconColor(String type) {
     switch (type) {
       case 'payment':
@@ -100,6 +98,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     }
   }
 
+  void _markAllAsRead() {
+    setState(() {
+      for (var notif in _mockNotifications) {
+        notif.isRead = true;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final unreadCount = _mockNotifications.where((n) => !n.isRead).length;
@@ -110,8 +116,14 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notifikasi'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.go('/'),
+        ),
         actions: [
-          TextButton(onPressed: () {}, child: const Text("Tandai Semua"))
+          if (unreadCount > 0)
+            TextButton(
+                onPressed: _markAllAsRead, child: const Text("Tandai Semua"))
         ],
       ),
       body: Column(
@@ -162,8 +174,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // **BAGIAN YANG DIPERBAIKI**
-                        // Memanggil _getIcon dan _getIconColor untuk menampilkan ikon
                         CircleAvatar(
                           backgroundColor:
                               _getIconColor(notif.type).withAlpha(26),
@@ -175,25 +185,29 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(notif.title,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      color: notif.isRead
-                                          ? Colors.grey[600]
-                                          : Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge
-                                              ?.color)),
+                              Text(
+                                notif.title,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: notif.isRead
+                                      ? Colors.grey[600]
+                                      : Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge
+                                          ?.color,
+                                ),
+                              ),
                               const SizedBox(height: 4),
                               Text(notif.message,
                                   style: TextStyle(color: Colors.grey[600])),
                               const SizedBox(height: 8),
                               Text(
-                                  timeAgoSinceDate(notif.timestamp,
-                                      numericDates: false),
-                                  style: TextStyle(
-                                      color: Colors.grey[500], fontSize: 12)),
+                                timeAgoSinceDate(notif.timestamp,
+                                    numericDates: false),
+                                style: TextStyle(
+                                    color: Colors.grey[500], fontSize: 12),
+                              ),
                             ],
                           ),
                         ),
@@ -203,8 +217,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                             height: 8,
                             margin: const EdgeInsets.only(left: 12),
                             decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppTheme.primaryColor),
+                              shape: BoxShape.circle,
+                              color: AppTheme.primaryColor,
+                            ),
                           ),
                       ],
                     ),
