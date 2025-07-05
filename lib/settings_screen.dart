@@ -17,10 +17,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        // FIX: Added a leading back button
+        // PERBAIKAN: Mengubah onPressed agar navigasi ke halaman '/profile'
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
+          onPressed: () =>
+              context.go('/profile'), // Mengarahkan ke halaman profil
         ),
         title: const Text('Pengaturan'),
       ),

@@ -42,13 +42,17 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // No longer creating a new provider here. It consumes the one from main.dart
     final provider = Provider.of<KosProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pencarian Kos'),
-        // The back button is automatically handled by go_router
+        // PERBAIKAN: Menambahkan leading back button untuk navigasi ke dashboard utama
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () =>
+              context.go('/'), // Mengarahkan ke root path (dashboard utama)
+        ),
       ),
       body: Column(
         children: [
