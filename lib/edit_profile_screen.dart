@@ -1,11 +1,18 @@
+// edit_profile_screen.dart
+
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 import 'auth_provider.dart';
+import 'app_theme.dart';
+import 'models.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
-
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
@@ -15,6 +22,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late TextEditingController _nameController;
   late TextEditingController _emailController;
   bool _isLoading = false;
+  File? _imageFile;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -31,30 +40,47 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.dispose();
   }
 
-  Future<void> _saveProfile() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
 
-      final success = await context.read<AuthProvider>().updateProfile(
+  Future<void> _saveProfile() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      // Panggil provider dengan file gambar
+      await context.read<AuthProvider>().updateProfile(
             _nameController.text,
             _emailController.text,
+            _imageFile, // Kirim file gambar
           );
 
       if (mounted) {
-        if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('Profil berhasil diperbarui!'),
-                backgroundColor: Colors.green),
-          );
-          context.pop();
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('Gagal memperbarui profil.'),
-                backgroundColor: Colors.red),
-          );
-        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Profil berhasil diperbarui!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        context.pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(e.toString().replaceFirst('Exception: ', '')),
+              backgroundColor: Colors.red),
+        );
+      }
+    } finally {
+      if (mounted) {
         setState(() => _isLoading = false);
       }
     }
@@ -62,21 +88,67 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<AuthProvider>(context).user;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Profil'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.pop(),
+        ),
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
           children: [
-            TextFormField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Nama Lengkap',
-                prefixIcon: Icon(Icons.person_outline),
+            // --- Profile Picture Section ---
+            Center(
+              child: Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Colors.grey.shade200,
+                    backgroundImage: _imageFile != null
+                        ? FileImage(_imageFile!)
+                        : (user?.avatar != null && user!.avatar!.isNotEmpty
+                            ? CachedNetworkImageProvider(user.avatar!)
+                            : null) as ImageProvider?,
+                    child: (_imageFile == null &&
+                            (user?.avatar == null || user!.avatar!.isEmpty))
+                        ? Icon(Icons.person,
+                            size: 60, color: Colors.grey.shade400)
+                        : null,
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: _pickImage,
+                      child: Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryColor,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: const Icon(Icons.camera_alt,
+                            color: Colors.white, size: 20),
+                      ),
+                    ),
+                  )
+                ],
               ),
+            ),
+            const SizedBox(height: 40),
+
+            // --- Form Fields ---
+            _buildTextField(
+              controller: _nameController,
+              label: 'Nama Lengkap',
+              icon: Icons.person_outline,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Nama tidak boleh kosong';
@@ -84,13 +156,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            const SizedBox(height: 20),
+            _buildTextField(
               controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                prefixIcon: Icon(Icons.mail_outline),
-              ),
+              label: 'Email',
+              icon: Icons.mail_outline,
               keyboardType: TextInputType.emailAddress,
               validator: (value) {
                 if (value == null || !value.contains('@')) {
@@ -99,24 +169,59 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 return null;
               },
             ),
-            const SizedBox(height: 32),
-            ElevatedButton.icon(
+            const SizedBox(height: 40),
+
+            // --- Save Button ---
+            ElevatedButton(
               onPressed: _isLoading ? null : _saveProfile,
-              icon: _isLoading
-                  ? Container(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: _isLoading
+                  ? const SizedBox(
                       width: 24,
                       height: 24,
-                      padding: const EdgeInsets.all(2.0),
-                      child: const CircularProgressIndicator(
+                      child: CircularProgressIndicator(
                         color: Colors.white,
                         strokeWidth: 3,
                       ))
-                  : const Icon(Icons.save_outlined),
-              label: const Text('Simpan Perubahan'),
+                  : const Text('Simpan Perubahan',
+                      style: TextStyle(fontSize: 16)),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  // Helper widget untuk konsistensi tampilan form field
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    String? Function(String?)? validator,
+    TextInputType? keyboardType,
+    bool obscureText = false,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          validator: validator,
+          keyboardType: keyboardType,
+          obscureText: obscureText,
+          decoration: InputDecoration(
+            prefixIcon: Icon(icon, color: Colors.grey),
+            // Hapus labelText agar tidak muncul di dalam
+          ),
+        ),
+      ],
     );
   }
 }

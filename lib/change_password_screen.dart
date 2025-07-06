@@ -1,3 +1,5 @@
+// change_password_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -5,7 +7,6 @@ import 'auth_provider.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
-
   @override
   State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
 }
@@ -26,29 +27,33 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   }
 
   Future<void> _savePassword() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
+    if (!_formKey.currentState!.validate()) return;
 
-      final success = await context.read<AuthProvider>().changePassword(
+    setState(() => _isLoading = true);
+
+    try {
+      await context.read<AuthProvider>().changePassword(
             _oldPasswordController.text,
             _newPasswordController.text,
           );
-
       if (mounted) {
-        if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('Password berhasil diubah!'),
-                backgroundColor: Colors.green),
-          );
-          context.pop();
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('Gagal mengubah password.'),
-                backgroundColor: Colors.red),
-          );
-        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Password berhasil diubah!'),
+              backgroundColor: Colors.green),
+        );
+        context.pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(e.toString().replaceFirst('Exception: ', '')),
+              backgroundColor: Colors.red),
+        );
+      }
+    } finally {
+      if (mounted) {
         setState(() => _isLoading = false);
       }
     }
@@ -59,30 +64,31 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ubah Password'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.pop(),
+        ),
       ),
       body: Form(
         key: _formKey,
         child: ListView(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
           children: [
-            TextFormField(
+            const SizedBox(height: 20),
+            _buildTextField(
               controller: _oldPasswordController,
+              label: "Password Lama",
+              icon: Icons.lock_outline,
               obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Password Lama',
-                prefixIcon: Icon(Icons.lock_outline),
-              ),
               validator: (v) =>
                   v!.isEmpty ? 'Password lama tidak boleh kosong' : null,
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            const SizedBox(height: 20),
+            _buildTextField(
               controller: _newPasswordController,
+              label: "Password Baru",
+              icon: Icons.lock_person_outlined,
               obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Password Baru',
-                prefixIcon: Icon(Icons.lock),
-              ),
               validator: (v) {
                 if (v == null || v.length < 8) {
                   return 'Password minimal 8 karakter';
@@ -90,14 +96,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
-            TextFormField(
+            const SizedBox(height: 20),
+            _buildTextField(
               controller: _confirmPasswordController,
+              label: "Konfirmasi Password Baru",
+              icon: Icons.lock_person_outlined,
               obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Konfirmasi Password Baru',
-                prefixIcon: Icon(Icons.lock),
-              ),
               validator: (v) {
                 if (v != _newPasswordController.text) {
                   return 'Password tidak cocok';
@@ -105,24 +109,54 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 return null;
               },
             ),
-            const SizedBox(height: 32),
-            ElevatedButton.icon(
+            const SizedBox(height: 40),
+            ElevatedButton(
               onPressed: _isLoading ? null : _savePassword,
-              icon: _isLoading
-                  ? Container(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: _isLoading
+                  ? const SizedBox(
                       width: 24,
                       height: 24,
-                      padding: const EdgeInsets.all(2.0),
-                      child: const CircularProgressIndicator(
+                      child: CircularProgressIndicator(
                         color: Colors.white,
                         strokeWidth: 3,
                       ))
-                  : const Icon(Icons.save_outlined),
-              label: const Text('Simpan Password'),
+                  : const Text('Simpan Password',
+                      style: TextStyle(fontSize: 16)),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  // Helper widget untuk konsistensi tampilan form field
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    String? Function(String?)? validator,
+    bool obscureText = false,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          validator: validator,
+          obscureText: obscureText,
+          decoration: InputDecoration(
+            prefixIcon: Icon(icon, color: Colors.grey),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -61,28 +61,29 @@ class _ChatListScreenState extends State<ChatListScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Chat'),
-          bottom: TabBar(
-            controller: _tabController,
-            indicatorColor: AppTheme.primaryColor,
-            labelColor: AppTheme.primaryColor,
-            unselectedLabelColor: Colors.grey[600],
-            tabs: const [
-              Tab(text: 'Semua'),
-              Tab(text: 'Membeli'),
-              Tab(text: 'Menjual'),
-            ],
-          ),
-        ),
-        body: TabBarView(
+      appBar: AppBar(
+        title: const Text('Chat'),
+        bottom: TabBar(
           controller: _tabController,
-          children: [
-            _buildChatList(_mockChatRooms),
-            _buildEmptyList("Belum ada chat pembelian."),
-            _buildEmptyList("Belum ada chat penjualan."),
+          indicatorColor: AppTheme.primaryColor,
+          labelColor: AppTheme.primaryColor,
+          unselectedLabelColor: Colors.grey[600],
+          tabs: const [
+            Tab(text: 'Semua'),
+            Tab(text: 'Membeli'),
+            Tab(text: 'Menjual'),
           ],
-        ));
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildChatList(_mockChatRooms),
+          _buildEmptyList("Belum ada chat pembelian."),
+          _buildEmptyList("Belum ada chat penjualan."),
+        ],
+      ),
+    );
   }
 
   Widget _buildChatList(List<ChatRoom> rooms) {
@@ -99,7 +100,6 @@ class _ChatListScreenState extends State<ChatListScreen>
         return ListTile(
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          // FIX: Use context.push to preserve the navigation stack
           onTap: () => context.push('/chat/${room.id}', extra: room),
           leading: Stack(
             children: [

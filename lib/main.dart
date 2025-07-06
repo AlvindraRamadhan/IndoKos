@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 import 'auth_provider.dart';
 import 'theme_provider.dart';
-import 'kos_provider.dart'; 
+import 'kos_provider.dart';
 import 'app_theme.dart';
 import 'app_router.dart';
 import 'loading_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await initializeDateFormatting('id_ID', null);
-
   runApp(const MyApp());
 }
 
@@ -25,8 +29,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(
-            create: (_) => KosProvider()), // Add KosProvider here
+        ChangeNotifierProvider(create: (_) => KosProvider()),
       ],
       child: const AppContent(),
     );
@@ -50,10 +53,9 @@ class _AppContentState extends State<AppContent> {
   }
 
   Future<void> _initializeApp() async {
-    // No need to load user here if it's handled in the router/redirect
-    await Provider.of<AuthProvider>(context, listen: false).loadUser();
-    // Simulate loading time
-    await Future.delayed(const Duration(milliseconds: 2500));
+    // Jeda buatan yang lama telah dihapus agar aplikasi tidak menunggu.
+    // Cukup beri jeda sangat singkat agar transisi mulus.
+    await Future.delayed(const Duration(seconds: 3));
     if (mounted) {
       setState(() {
         _isInitializing = false;

@@ -165,7 +165,6 @@ class KosSubmission {
     this.contactName = '',
     this.contactPhone = '',
     this.contactEmail = '',
-    // FIX: Removed unnecessary 'this.' qualifier
   })  : facilities = facilities ?? [],
         rules = rules ?? [],
         images = images ?? [];

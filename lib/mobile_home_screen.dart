@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'kos_provider.dart';
 import 'kos_card_mobile.dart';
-import 'promo_carousel.dart'; // Pastikan ini adalah widget carousel gambar Anda
+import 'promo_carousel.dart'; 
 import 'filter_modal.dart';
 import 'app_theme.dart';
 
@@ -82,7 +82,7 @@ class _MobileHomeScreenState extends State<MobileHomeScreen> {
                     border: Border.all(color: Colors.grey.shade300),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withAlpha(25),
                         spreadRadius: 1,
                         blurRadius: 5,
                         offset: const Offset(0, 2),
@@ -149,7 +149,7 @@ class _MobileHomeScreenState extends State<MobileHomeScreen> {
                               borderRadius: BorderRadius.circular(12),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.05),
+                                  color: Colors.black.withAlpha(13),
                                   spreadRadius: 0,
                                   blurRadius: 5,
                                   offset: const Offset(0, 2),

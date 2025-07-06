@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "462444646789",
+    "project_id": "indokos-app",
+    "storage_bucket": "indokos-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:462444646789:android:0d3f1e35d34cbd3b08b4ec",
+        "android_client_info": {
+          "package_name": "com.example.indokos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqL_XAXC1564WBTC9QH61RIzXRv9qa4Zc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

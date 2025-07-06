@@ -1,3 +1,5 @@
+// login_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
@@ -26,31 +28,63 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  // FIX: Menggunakan try-catch-finally untuk flow yang lebih bersih
   Future<void> _handleLogin() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-        _error = '';
-      });
-      final success = await context.read<AuthProvider>().login(
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+      _error = '';
+    });
+
+    try {
+      await context.read<AuthProvider>().login(
             _emailController.text,
             _passwordController.text,
           );
-      if (!success && mounted) {
-        setState(() => _error = 'Email atau password tidak valid');
+      // Navigasi akan ditangani oleh AppRouter secara otomatis,
+      // jadi tidak perlu ada navigasi di sini.
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = e.toString().replaceFirst('Exception: ', '');
+        });
       }
-      if (mounted) setState(() => _isLoading = false);
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
+  // FIX: Menggunakan try-catch-finally untuk Google Login
   Future<void> _handleGoogleLogin() async {
-    setState(() => _isLoading = true);
-    await context.read<AuthProvider>().loginWithGoogle();
-    if (mounted) setState(() => _isLoading = false);
+    setState(() {
+      _isLoading = true;
+      _error = '';
+    });
+
+    try {
+      await context.read<AuthProvider>().loginWithGoogle();
+      // Navigasi juga ditangani oleh AppRouter
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = e.toString().replaceFirst('Exception: ', '');
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // ... Sisa build method TIDAK BERUBAH ...
+    // ... Cukup salin dari kode asli Anda ...
+    // ... karena perubahannya hanya ada di dalam method _handleLogin dan _handleGoogleLogin
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(gradient: AppTheme.primaryGradient),
@@ -185,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      color:Colors.white.withAlpha(26),
+                      color: Colors.white.withAlpha(26),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Text(
