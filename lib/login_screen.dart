@@ -1,4 +1,4 @@
-// login_screen.dart
+// lib/login_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -28,7 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  // FIX: Menggunakan try-catch-finally untuk flow yang lebih bersih
   Future<void> _handleLogin() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -42,8 +41,6 @@ class _LoginScreenState extends State<LoginScreen> {
             _emailController.text,
             _passwordController.text,
           );
-      // Navigasi akan ditangani oleh AppRouter secara otomatis,
-      // jadi tidak perlu ada navigasi di sini.
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -57,7 +54,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // FIX: Menggunakan try-catch-finally untuk Google Login
   Future<void> _handleGoogleLogin() async {
     setState(() {
       _isLoading = true;
@@ -66,7 +62,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       await context.read<AuthProvider>().loginWithGoogle();
-      // Navigasi juga ditangani oleh AppRouter
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -82,9 +77,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ... Sisa build method TIDAK BERUBAH ...
-    // ... Cukup salin dari kode asli Anda ...
-    // ... karena perubahannya hanya ada di dalam method _handleLogin dan _handleGoogleLogin
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(gradient: AppTheme.primaryGradient),
@@ -160,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Align(
                             alignment: Alignment.centerRight,
                             child: TextButton(
-                                onPressed: () {},
+                                onPressed: () => context.go('/forgot-password'),
                                 child: const Text('Lupa password?')),
                           ),
                           const SizedBox(height: 8),

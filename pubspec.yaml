@@ -23,7 +23,6 @@ dependencies:
   google_fonts: ^6.1.0
 
   # Utilities
-  image_picker: ^1.0.7
   url_launcher: ^6.2.5
 
   # For PDF Receipt Generation and Download
@@ -37,6 +36,7 @@ dependencies:
   firebase_auth: ^4.17.8
   cloud_firestore: ^4.15.8
   firebase_storage: ^11.6.9
+  image_picker: ^1.0.7
   google_sign_in: ^6.2.1
 
 dev_dependencies:

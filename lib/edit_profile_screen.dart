@@ -1,6 +1,6 @@
-// edit_profile_screen.dart
+// lib/edit_profile_screen.dart
 
-import 'dart:io';
+import 'dart:typed_data'; // FIX: Gunakan Uint8List untuk kompatibilitas web
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +22,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late TextEditingController _nameController;
   late TextEditingController _emailController;
   bool _isLoading = false;
-  File? _imageFile;
+
+  // FIX: Gunakan Uint8List untuk menyimpan data gambar
+  Uint8List? _imageBytes;
   final ImagePicker _picker = ImagePicker();
 
   @override
@@ -40,28 +42,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.dispose();
   }
 
+  // FIX: Ubah cara memilih gambar agar menghasilkan Uint8List
   Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
     if (pickedFile != null) {
+      // Baca file sebagai bytes
+      final bytes = await pickedFile.readAsBytes();
       setState(() {
-        _imageFile = File(pickedFile.path);
+        _imageBytes = bytes;
       });
     }
   }
 
+  // FIX: Kirim _imageBytes ke provider
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
-
     setState(() => _isLoading = true);
-
     try {
-      // Panggil provider dengan file gambar
       await context.read<AuthProvider>().updateProfile(
             _nameController.text,
             _emailController.text,
-            _imageFile, // Kirim file gambar
+            _imageBytes, // Kirim data bytes gambar
           );
-
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -89,7 +92,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<AuthProvider>(context).user;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Profil'),
@@ -103,19 +105,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
           children: [
-            // --- Profile Picture Section ---
             Center(
               child: Stack(
                 children: [
                   CircleAvatar(
                     radius: 60,
                     backgroundColor: Colors.grey.shade200,
-                    backgroundImage: _imageFile != null
-                        ? FileImage(_imageFile!)
+                    // FIX: Tampilkan gambar dari bytes jika ada, jika tidak, dari network
+                    backgroundImage: _imageBytes != null
+                        ? MemoryImage(_imageBytes!)
                         : (user?.avatar != null && user!.avatar!.isNotEmpty
                             ? CachedNetworkImageProvider(user.avatar!)
                             : null) as ImageProvider?,
-                    child: (_imageFile == null &&
+                    child: (_imageBytes == null &&
                             (user?.avatar == null || user!.avatar!.isEmpty))
                         ? Icon(Icons.person,
                             size: 60, color: Colors.grey.shade400)
@@ -143,8 +145,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
             ),
             const SizedBox(height: 40),
-
-            // --- Form Fields ---
             _buildTextField(
               controller: _nameController,
               label: 'Nama Lengkap',
@@ -170,8 +170,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               },
             ),
             const SizedBox(height: 40),
-
-            // --- Save Button ---
             ElevatedButton(
               onPressed: _isLoading ? null : _saveProfile,
               style: ElevatedButton.styleFrom(
@@ -194,7 +192,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  // Helper widget untuk konsistensi tampilan form field
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
@@ -218,7 +215,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           obscureText: obscureText,
           decoration: InputDecoration(
             prefixIcon: Icon(icon, color: Colors.grey),
-            // Hapus labelText agar tidak muncul di dalam
           ),
         ),
       ],

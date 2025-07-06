@@ -1,6 +1,6 @@
-// auth_provider.dart
+// lib/auth_provider.dart
 
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -58,57 +58,44 @@ class AuthProvider with ChangeNotifier {
     return null;
   }
 
-  // =======================================================================
-  // FIX: FUNGSI UPDATE PROFILE DIPERBARUI AGAR CEPAT DAN EFISIEN
-  // =======================================================================
   Future<void> updateProfile(
-      String newName, String newEmail, File? imageFile) async {
+      String newName, String newEmail, Uint8List? imageBytes) async {
     if (_user == null) throw Exception("User tidak ditemukan");
 
     try {
-      String? newAvatarUrl = _user!.avatar; // Simpan URL avatar lama
+      String? newAvatarUrl = _user!.avatar;
 
-      // 1. Jika ada file gambar baru, unggah ke storage
-      if (imageFile != null) {
+      if (imageBytes != null) {
         final ref = _storage.ref().child('avatars').child(_user!.id);
-        await ref.putFile(imageFile);
-        newAvatarUrl = await ref.getDownloadURL(); // Dapatkan URL baru
+        await ref.putData(imageBytes);
+        newAvatarUrl = await ref.getDownloadURL();
       }
 
-      // 2. Siapkan data untuk diupdate ke Firestore
       Map<String, dynamic> dataToUpdate = {
         'name': newName,
         'email': newEmail,
-        'avatar': newAvatarUrl, // Gunakan URL baru atau yang lama
+        'avatar': newAvatarUrl,
+        'provider': _user!.provider,
+        'id': _user!.id,
       };
 
-      // 3. Update data di Firestore
-      await _firestore.collection('users').doc(_user!.id).update(dataToUpdate);
+      await _firestore
+          .collection('users')
+          .doc(_user!.id)
+          .set(dataToUpdate, SetOptions(merge: true));
 
-      // 4. Update email di Firebase Auth jika berbeda
       if (_auth.currentUser?.email != newEmail) {
         await _auth.currentUser?.verifyBeforeUpdateEmail(newEmail);
       }
 
-      // 5. FIX: Langsung update state lokal, tidak perlu fetch ulang dari database
-      _user = UserModel(
-        id: _user!.id,
-        name: newName,
-        email: newEmail,
-        avatar: newAvatarUrl,
-        provider: _user!.provider,
-      );
-
-      // 6. Beri tahu UI bahwa ada perubahan
+      _user = UserModel.fromMap(dataToUpdate);
       notifyListeners();
     } catch (e) {
       debugPrint("Error update profil: $e");
       throw Exception('Gagal memperbarui profil.');
     }
   }
-  // =======================================================================
 
-  // ... Sisa kode lainnya di AuthProvider tidak berubah ...
   Future<void> login(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
@@ -197,6 +184,18 @@ class AuthProvider with ChangeNotifier {
       await _auth.currentUser!.updatePassword(newPassword);
     } on FirebaseAuthException catch (e) {
       throw Exception(e.message ?? 'Gagal mengganti password.');
+    }
+  }
+
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        throw Exception('Tidak ada pengguna yang terdaftar dengan email ini.');
+      } else {
+        throw Exception('Gagal mengirim email reset password. Coba lagi.');
+      }
     }
   }
 }

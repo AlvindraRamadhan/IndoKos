@@ -1,5 +1,7 @@
+// models.dart
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data'; // Add this import
 
 class UserModel {
   final String id;
@@ -15,7 +17,6 @@ class UserModel {
     this.avatar,
     required this.provider,
   });
-
   Map<String, dynamic> toMap() => {
         'id': id,
         'email': email,
@@ -23,14 +24,12 @@ class UserModel {
         'avatar': avatar,
         'provider': provider
       };
-
   factory UserModel.fromMap(Map<String, dynamic> map) => UserModel(
       id: map['id'],
       email: map['email'],
       name: map['name'],
       avatar: map['avatar'],
       provider: map['provider']);
-
   String toJson() => json.encode(toMap());
   factory UserModel.fromJson(String source) =>
       UserModel.fromMap(json.decode(source));
@@ -48,7 +47,6 @@ class KosData {
   final String type;
   final String distance;
   bool isWishlisted;
-
   KosData({
     required this.id,
     required this.name,
@@ -94,7 +92,6 @@ class NotificationItem {
   final DateTime timestamp;
   bool isRead;
   final String? actionUrl;
-
   NotificationItem({
     required this.id,
     required this.title,
@@ -108,7 +105,6 @@ class NotificationItem {
 
 class PromoItem {
   final String id, title, subtitle, image;
-
   PromoItem({
     required this.id,
     required this.title,
@@ -122,7 +118,6 @@ class ChatRoom {
   final DateTime lastMessageTime;
   final int unreadCount;
   final bool isOnline;
-
   ChatRoom({
     required this.id,
     required this.name,
@@ -137,7 +132,6 @@ class ChatRoom {
 class ChatMessage {
   final String id, senderId, message;
   final DateTime timestamp;
-
   ChatMessage({
     required this.id,
     required this.senderId,
@@ -149,9 +143,8 @@ class ChatMessage {
 class KosSubmission {
   String name, address, city, type, price, description;
   List<String> facilities, rules;
-  List<File> images;
+  List<Uint8List> imageBytes; // Change this to List<Uint8List>
   String contactName, contactPhone, contactEmail;
-
   KosSubmission({
     this.name = '',
     this.address = '',
@@ -161,13 +154,13 @@ class KosSubmission {
     this.description = '',
     List<String>? facilities,
     List<String>? rules,
-    List<File>? images,
+    List<Uint8List>? imageBytes, // Change this to List<Uint8List>
     this.contactName = '',
     this.contactPhone = '',
     this.contactEmail = '',
   })  : facilities = facilities ?? [],
         rules = rules ?? [],
-        images = images ?? [];
+        imageBytes = imageBytes ?? []; // Initialize as imageBytes
 }
 
 class BookingData {
@@ -175,7 +168,6 @@ class BookingData {
   int duration;
   String fullName, phone, email, idNumber, emergencyContact;
   String additionalNotes;
-
   BookingData({
     this.checkInDate = '',
     this.duration = 1,

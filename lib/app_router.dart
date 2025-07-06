@@ -1,3 +1,5 @@
+// lib/app_router.dart
+
 import 'package:go_router/go_router.dart';
 import 'package:indokos/payment_screen.dart';
 
@@ -22,6 +24,7 @@ import 'settings_screen.dart';
 import 'edit_profile_screen.dart';
 import 'change_password_screen.dart';
 import 'models.dart';
+import 'forgot_password_screen.dart';
 
 class AppRouter {
   final AuthProvider authProvider;
@@ -30,7 +33,7 @@ class AppRouter {
   late final GoRouter router = GoRouter(
     refreshListenable: authProvider,
     initialLocation: '/',
-    debugLogDiagnostics: true, // Aktifkan untuk melihat log navigasi
+    debugLogDiagnostics: true,
     routes: <RouteBase>[
       ShellRoute(
         builder: (context, state, child) {
@@ -54,6 +57,9 @@ class AppRouter {
       GoRoute(
           path: '/register',
           builder: (context, state) => const RegisterScreen()),
+      GoRoute(
+          path: '/forgot-password',
+          builder: (context, state) => const ForgotPasswordScreen()),
       GoRoute(
           path: '/search', builder: (context, state) => const SearchScreen()),
       GoRoute(
@@ -105,27 +111,20 @@ class AppRouter {
           path: '/change-password',
           builder: (context, state) => const ChangePasswordScreen()),
     ],
-    // FIX: Logika redirect disederhanakan agar lebih kuat dan konsisten
     redirect: (context, state) {
       final loggedIn = authProvider.user != null;
-      final location = state.matchedLocation;
+      final onAuthRoutes = state.matchedLocation == '/login' ||
+          state.matchedLocation == '/register' ||
+          state.matchedLocation == '/forgot-password';
 
-      // Cek apakah pengguna sedang berada di halaman login atau register
-      final onAuthRoute = location == '/login' || location == '/register';
-
-      // ATURAN 1: Jika pengguna BELUM login dan TIDAK sedang di halaman auth,
-      // paksa arahkan ke halaman login. Ini melindungi semua halaman lain.
-      if (!loggedIn && !onAuthRoute) {
+      if (!loggedIn && !onAuthRoutes) {
         return '/login';
       }
 
-      // ATURAN 2: Jika pengguna SUDAH login dan mencoba mengakses halaman auth,
-      // arahkan ke beranda agar tidak melihat halaman login/register lagi.
-      if (loggedIn && onAuthRoute) {
+      if (loggedIn && onAuthRoutes) {
         return '/';
       }
 
-      // Jika tidak ada kondisi di atas yang terpenuhi, jangan lakukan redirect.
       return null;
     },
   );
