@@ -43,9 +43,7 @@ Dengan antarmuka yang user-friendly dan sistem yang aman, IndoKos menjadi solusi
 - Provider (State Management)
 - Go Router (Navigation)
 2. Backend
-- 
-- 
-- 
+- Firebase
 3. Library Pendukung
 - Cached Network Image
 - Image Picker
@@ -144,10 +142,7 @@ Proyek ini dikembangkan sebagai bagian dari tugas mata kuliah Teknologi Mobile d
 
 ## 📌 Status Proyek
 
-🟡 Dalam Pengembangan
-Proyek ini masih dalam tahap pengembangan aktif. Fitur-fitur baru sedang ditambahkan dan perbaikan bug sedang dilakukan secara berkala.
-
-
+🟡 Selesai
 ---
 
 ## 📫 Kontak
